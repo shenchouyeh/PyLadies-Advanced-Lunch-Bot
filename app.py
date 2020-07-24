@@ -1,5 +1,4 @@
 # encoding: utf-8
-import apiai
 import json
 import os
 import random
@@ -26,7 +25,6 @@ app = Flask(__name__)
 GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
-ai = apiai.ApiAI(os.environ['DIALOGFLOW_CLIENT_ACCESS_TOKEN'])
 
 @app.route('/')
 def index():
@@ -54,15 +52,8 @@ def callback():
 def handle_text_message(event):                  # default
     msg = event.message.text # message from user
     uid = event.source.user_id # user id
-    # 1. 傳送使用者輸入到 dialogflow 上
-    ai_request = ai.text_request()
-    ai_request.lang = "zh-CN"
-    ai_request.session_id = uid
-    ai_request.query = msg
-
-    # 2. 獲得使用者的意圖
-    ai_response = json.loads(ai_request.getresponse().read())
-    user_intent = ai_response['result']['metadata']['intentName']
+ 
+    user_intent = "WhatToEatForLunch"
 
     # 3. 根據使用者的意圖做相對應的回答
     if user_intent == "WhatToEatForLunch": # 當使用者意圖為詢問午餐時
