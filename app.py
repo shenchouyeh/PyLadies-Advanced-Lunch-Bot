@@ -134,6 +134,20 @@ def handle_location_message(event):
         event.reply_token,
         buttons_template_message)
 
+import tempfile
+static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
+
+@handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    message_content = line_bot_api.get_message_content(event.message.id)
+
+    with tempfile.TemporaryFile(dir=static_tmp_path, suffix='.jpg', prefix='img-') as fp:
+        for chunk in message_content.iter_content():
+             fp.write(chunk)
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text='上傳成功'))
+
 
 # ================= 機器人區塊 End =================
 
